@@ -4,64 +4,73 @@ namespace Picoss\SMoney\Entity;
 
 class User extends EntityBase
 {
-
     /**
-     * User id
+     * Id
      *
-     * @var int $Id
+     * @var string
      */
     protected $Id;
 
     /**
-     * User app id
+     * AppUserId
      *
-     * @var string $AppUserId
+     * @var string
      */
     protected $AppUserId;
 
     /**
-     * User role
+     * Role
      *
-     * @var int $Role
+     * @var string
      */
     protected $Role;
 
     /**
-     * User profile
+     * Type
      *
-     * @var Profile $Profile
+     * @var string
+     */
+    protected $Type;
+
+    /**
+     * Profile
+     *
+     * @var Profile
      */
     protected $Profile;
 
     /**
-     * User total amount
+     * Amount
      *
-     * @var int $Amount
+     * @var string
      */
     protected $Amount;
 
     /**
-     * Use sub accounts
+     * SubAccounts
      *
-     * @var ArrayCollection $SubAccounts
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $SubAccounts;
 
+    /**
+     * BankAccounts
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
     protected $BankAccounts;
 
-    protected $CBCards;
-
     /**
-     * User status
+     * Status
      *
-     * @var int $status
+     * @var string
      */
     protected $Status;
 
     /**
-     * User company
+     * Company
      *
-     * @var string $Company
+     * @var Company
      */
     protected $Company;
 
@@ -73,6 +82,20 @@ class User extends EntityBase
     protected $subObjects = [
         'Profile' => 'Picoss\\SMoney\\Entity\\Profile',
         'SubAccounts' => 'Picoss\\SMoney\\Entity\\SubAccount',
+        'BankAccounts' => 'Picoss\\SMoney\\Entity\\BankAccount',
+        'Company' => 'Picoss\\SMoney\\Entity\\Company',
+    ];
+
+    /**
+     * Createable fields
+     *
+     * @var array
+     */
+    protected $createableFields = [
+        'AppUserId',
+        'Profile',
+        'Type',
+        'Company',
     ];
 
     /**
@@ -83,71 +106,159 @@ class User extends EntityBase
     protected $updateableFields = [
         'AppUserId',
         'Profile',
+        'Type',
+        'Company',
     ];
 
-    public function setId($id)
-    {
-        $this->Id = $id;
-
-        return $this;
-    }
-
+    /**
+     * Get Id
+     *
+     * @return string
+     */
     public function getId()
     {
         return $this->Id;
     }
 
-    public function setAppuserid($appuserid)
+    /**
+     * Set AppUserId
+     *
+     * @var string $AppUserId
+     * @return User
+     */
+    public function setAppUserId($AppUserId)
     {
-        $this->AppUserId = $appuserid;
+        $this->AppUserId = $AppUserId;
 
         return $this;
     }
 
-    public function getAppuserid()
+    /**
+     * Get AppUserId
+     *
+     * @return string
+     */
+    public function getAppUserId()
     {
         return $this->AppUserId;
     }
 
+    /**
+     * Get Role
+     *
+     * @return string
+     */
     public function getRole()
     {
         return $this->Role;
     }
 
-    public function setProfile(Profile $profile)
+    /**
+     * Set Type
+     *
+     * @var string $Type
+     * @return User
+     */
+    public function setType($Type)
     {
-        $this->Profile = $profile;
+        $this->Type = $Type;
 
         return $this;
     }
 
+    /**
+     * Get Type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->Type;
+    }
+
+    /**
+     * Set Profile
+     *
+     * @var Profile $Profile
+     * @return User
+     */
+    public function setProfile(Profile $Profile)
+    {
+        $this->Profile = $Profile;
+
+        return $this;
+    }
+
+    /**
+     * Get Profile
+     *
+     * @return Profile
+     */
     public function getProfile()
     {
         return $this->Profile;
     }
 
+    /**
+     * Get Amount
+     *
+     * @return string
+     */
     public function getAmount()
     {
         return $this->Amount;
     }
 
-    public function getSubaccounts()
+    /**
+     * Get SubAccounts
+     *
+     * @return string
+     */
+    public function getSubAccounts()
     {
         return $this->SubAccounts;
     }
 
-    public function getBankaccount()
+    /**
+     * Get BankAccounts
+     *
+     * @return string
+     */
+    public function getBankAccounts()
     {
         return $this->BankAccounts;
     }
 
-    public function getCbcards()
-    {
-        return $this->CBCards;
-    }
-
+    /**
+     * Get Status
+     *
+     * @return string
+     */
     public function getStatus()
     {
         return $this->Status;
+    }
+
+    /**
+     * Set Company
+     *
+     * @var string $Company
+     * @return User
+     */
+    public function setCompany($Company)
+    {
+        $this->Company = $Company;
+
+        return $this;
+    }
+
+    /**
+     * Get Company
+     *
+     * @return string
+     */
+    public function getCompany()
+    {
+        return $this->Company;
     }
 }

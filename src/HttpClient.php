@@ -3,6 +3,7 @@
 namespace Picoss\SMoney;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 
 class HttpClient
@@ -137,13 +138,19 @@ class HttpClient
 
     private function sendRequest($request)
     {
-        try {
             return $this->getClient()->send($request);
-        } catch (RequestException $e) {
-            echo $e->getRequest() . "\n";
-            if ($e->hasResponse()) {
-                echo $e->getResponse() . "\n";
-            }
-        }
+//        try {
+//            return $this->getClient()->send($request);
+//        }
+//        catch(ClientException $e) {
+//            var_dump(get_class($e));
+//            var_dump($e->getRe);
+//        }
+//        catch (RequestException $e) {
+//            echo 'Request: ' . $e->getRequest() . "\n";
+//            if ($e->hasResponse()) {
+//                echo 'Response: ' . $e->getResponse() . "\n";
+//            }
+//        }
     }
 }

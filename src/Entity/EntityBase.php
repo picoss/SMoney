@@ -4,48 +4,54 @@ namespace Picoss\SMoney\Entity;
 
 abstract class EntityBase
 {
-
     /**
-     * Is entity persistable
+     * Entity relations
      *
-     * @var bool $persistable
+     * @var array $subObjects
      */
-    protected $persistable = true;
-
     protected $subObjects = [];
 
+    /**
+     * Createable fields
+     *
+     * @var array
+     */
+    protected $createableFields = [];
+
+    /**
+     * Updateable fields
+     *
+     * @var array
+     */
     protected $updateableFields = [];
 
+    /**
+     * Get entity relations
+     *
+     * @return array
+     */
     public function getSubObjects()
     {
         return $this->subObjects;
     }
 
+    /**
+     * Get creation fields
+     *
+     * @return array
+     */
+    public function getCreateableFields()
+    {
+        return $this->createableFields;
+    }
+
+    /**
+     * Get uptadeable fields
+     *
+     * @return array
+     */
     public function getUpdateableFields()
     {
         return $this->updateableFields;
-    }
-
-    /**
-     * Is entity is new ?
-     *
-     * @return bool|null
-     */
-    public function isNew()
-    {
-        if ($this->isPersistable()) {
-            return $this->Id != null;
-        }
-        return null;
-    }
-
-    /**
-     * Is entity persistable
-     *
-     * @return bool
-     */
-    public function isPersistable()
-    {
-        return $this->persistable;
     }
 }

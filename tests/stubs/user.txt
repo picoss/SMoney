@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Status Code: 200 OK
+Cache-Control: private
+Content-Type: application/vnd.s-money.v1+json; charset=utf-8
+Server: Microsoft-IIS/7.5
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET, ASP.NET
+Total-count: 2
+
+{"Id":1,"AppUserId":"S-Money-01","Type":1,"Role":1,"Profile":{"Civility":"0","FirstName":"S","LastName":"Money","Birthdate":"1980-01-01T00:00:00","Address":{"Street":"100 Rue SMoney","ZipCode":"75001","City":"Paris","Country":"FR"},"PhoneNumber":"0600000001","Email":"contact@s-money.fr","Alias":"S-Money"},"Amount":0,"SubAccounts":[{"Id":1,"AppAccountId":"S-Money-01","Amount":0,"DisplayName":"S-Money-01","IsDefault":true}],"BankAccounts":null,"CBCards":null,"Status":1}

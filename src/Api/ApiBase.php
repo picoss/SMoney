@@ -3,11 +3,12 @@
 namespace Picoss\SMoney\Api;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Message\RequestInterface;
+use GuzzleHttp\Message\ResponseInterface;
 use Picoss\SMoney\Entity\EntityBase;
 use Picoss\SMoney\SMoneyApi;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Picoss\SMoney\SMoneyError;
 
 abstract class ApiBase
 {
@@ -16,7 +17,7 @@ abstract class ApiBase
      *
      * @var SMoneyApi
      */
-    private $root;
+    protected $root;
 
     /**
      * Api version
@@ -32,6 +33,8 @@ abstract class ApiBase
      */
     private $outputFormat = 'json';
 
+    private $errors = [];
+
     public function __construct(SMoneyApi $root)
     {
         $this->root = $root;
@@ -41,18 +44,31 @@ abstract class ApiBase
     {
         $headers = $this->getBaseHeaders();
 
-        $response = $this->root->getHttpClient()->get($url, [], $headers);
+        try {
+            $response = $this->root->getHttpClient()->get($url, [], $headers);
 
-        return $this->castResponseToEntity($response->json(['object' => true]), $entityClassName);
+            return $this->castResponseToEntity($response->json(['object' => true]), $entityClassName);
+        } catch (ClientException $e) {
+            $this->addError($e->getRequest(), $e->getResponse());
+
+            return false;
+        }
     }
 
     protected function getOne($url, $entityClassName)
     {
         $headers = $this->getBaseHeaders();
 
-        $response = $this->root->getHttpClient()->get($url, [], $headers);
+        try {
+            $response = $this->root->getHttpClient()->get($url, [], $headers);
 
-        return $this->castResponseToEntity($response->json(['object' => true]), $entityClassName);
+            return $this->castResponseToEntity($response->json(['object' => true]), $entityClassName);
+        } catch (ClientException $e) {
+            $this->addError($e->getRequest(), $e->getResponse());
+
+            return false;
+        }
+
     }
 
     protected function createObject($url, $entity)
@@ -63,38 +79,61 @@ abstract class ApiBase
 
         $body = json_encode($requestData);
 
-        $response = $this->root->getHttpClient()->post($url, $body, $headers);
+        try {
+            $response = $this->root->getHttpClient()->post($url, $body, $headers);
 
-        return $this->castResponseToEntity($response->json(['object' => true]), get_class($entity));
+            return $this->castResponseToEntity($response->json(['object' => true]), get_class($entity));
+
+        } catch (ClientException $e) {
+            $this->addError($e->getRequest(), $e->getResponse());
+
+            return false;
+        }
     }
 
     protected function updateObject($url, $entity)
     {
         $headers = $this->getBaseHeaders();
 
-        $requestData = $this->getEntityRequestData($entity);
+        $requestData = $this->getEntityRequestData($entity, false);
 
         $body = json_encode($requestData);
 
-        $response = $this->root->getHttpClient()->put($url, $body, $headers);
+        try {
+            $response = $this->root->getHttpClient()->put($url, $body, $headers);
 
-        return $this->castResponseToEntity($response->json(['object' => true]), get_class($entity));
+            return $this->castResponseToEntity($response->json(['object' => true]), get_class($entity));
+
+        } catch (ClientException $e) {
+            $this->addError($e->getRequest(), $e->getResponse());
+
+            return false;
+        }
     }
 
     protected function deleteObject($url)
     {
         $headers = $this->getBaseHeaders();
 
-        $response = $this->root->getHttpClient()->delete($url, $headers);
+        try {
+            $response = $this->root->getHttpClient()->delete($url, $headers);
+
+            return true;
+        } catch (ClientException $e) {
+            $this->addError($e->getRequest(), $e->getResponse());
+
+            return false;
+        }
     }
 
-    private function castResponseToEntity($response, $entityClassName)
+    protected function castResponseToEntity($response, $entityClassName)
     {
         if (is_array($response)) {
             $list = new ArrayCollection();
             foreach ($response as $responseObject) {
                 $list->add($this->castResponseToEntity($responseObject, $entityClassName));
             }
+
             return $list;
         }
 
@@ -151,14 +190,14 @@ abstract class ApiBase
         return $entity;
     }
 
-    private function getEntityRequestData($entity)
+    private function getEntityRequestData($entity, $create = true)
     {
         $data = [];
-        $updateableFields = $entity->getUpdateableFields();
+        $fields = $create ? $entity->getCreateableFields() : $entity->getUpdateableFields();
 
         $entityReflection = new \ReflectionClass($entity);
 
-        foreach ($updateableFields as $field) {
+        foreach ($fields as $field) {
             if ($entityReflection->hasProperty($field)) {
                 $property = $entityReflection->getProperty($field);
                 $property->setAccessible(true);
@@ -166,9 +205,8 @@ abstract class ApiBase
 
                 if (is_object($value)) {
                     if ($value instanceof EntityBase) {
-                        $value = $this->getEntityRequestData($value);
-                    }
-                    elseif ($value instanceof \DateTime) {
+                        $value = $this->getEntityRequestData($value, $create);
+                    } elseif ($value instanceof \DateTime) {
                         $value = $value->format('c');
                     }
                 }
@@ -197,5 +235,49 @@ abstract class ApiBase
             'Accept' => sprintf($pattern, $this->getApiVersion(), $this->getOutputFormat()),
             'Content-Type' => sprintf($pattern, $this->getApiVersion(), $this->getOutputFormat()),
         ];
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    public function hasErrors()
+    {
+        return count($this->errors) != 0;
+    }
+
+    private function addError(RequestInterface $request, ResponseInterface $response)
+    {
+        $error = new SMoneyError();
+
+        $reflectionClass = new \ReflectionClass('\\Picoss\\SMoney\\SMoneyError');
+
+        $requestProperty = $reflectionClass->getProperty('Request');
+        $requestProperty->setAccessible(true);
+        $requestProperty->setValue($error, $request);
+
+        $responseProperty = $reflectionClass->getProperty('Response');
+        $responseProperty->setAccessible(true);
+        $responseProperty->setValue($error, $response);
+
+        try {
+            $responseArray = $response->json();
+            foreach ($responseArray as $property => $value) {
+                $reflectionProperty = $reflectionClass->getProperty($property);
+                $reflectionProperty->setAccessible(true);
+                $reflectionProperty->setValue($error, $value);
+            }
+        } catch (\Exception $e) {
+            $codeProperty = $reflectionClass->getProperty(('Code'));
+            $codeProperty->setAccessible(true);
+            $codeProperty->setValue($error, $e->getCode());
+
+            $errorMessageProperty = $reflectionClass->getProperty(('ErrorMessage'));
+            $errorMessageProperty->setAccessible(true);
+            $errorMessageProperty->setValue($error, $e->getMessage());
+        }
+
+        $this->errors[] = $error;
     }
 }

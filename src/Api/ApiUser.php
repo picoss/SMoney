@@ -2,66 +2,117 @@
 
 namespace Picoss\SMoney\Api;
 
-use Picoss\SMoney\Entity\SubAccount;
+use GuzzleHttp\Post\PostFile;
+use Picoss\SMoney\Entity\KYC;
 use Picoss\SMoney\Entity\User;
 
 class ApiUser extends ApiBase
 {
-
+    /**
+     * Api version
+     *
+     * @var int
+     */
     protected $apiVersion = 1;
 
+    /**
+     * Entity class name
+     *
+     * @var string
+     */
     protected $entityClassName = 'Picoss\\SMoney\\Entity\\User';
 
-    protected $subAccountClassName = 'Picoss\\SMoney\\Entity\\SubAccount';
+    /**
+     * KYC entity class name
+     * @var string
+     */
+    protected $KYCEntityClassName = 'Picoss\\SMoney\\Entity\\KYC';
 
+    /**
+     * Find all users
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
     public function findAll()
     {
         return $this->getAll('users', $this->entityClassName);
     }
 
-    public function findOneByAppUserId($id)
+    /**
+     * Find user by appuserid
+     *
+     * @param int $appUserId
+     * @return \Picoss\SMoney\Entity\User
+     */
+    public function findOneByAppUserId($appUserId)
     {
-        return $this->getOne('users/' . $id, $this->entityClassName);
+        return $this->getOne('users/' . $appUserId, $this->entityClassName);
     }
 
+    /**
+     * Create new user
+     *
+     * @param User $user
+     * @return \Picoss\SMoney\Entity\User
+     */
     public function create(User $user)
     {
-        return parent::createObject('users/', $user);
+        return $this->createObject('users/', $user);
     }
 
+    /**
+     * Update existing user
+     *
+     * @param User $user
+     * @return \Picoss\SMoney\Entity\User
+     */
     public function update(User $user)
     {
         $url = 'users/' . $user->getAppuserid();
-        return parent::updateObject($url, $user);
+
+        return $this->updateObject($url, $user);
     }
 
-    public function findUserSubAccounts(User $user)
+    /**
+     * Get user KYC demands
+     *
+     * @param string $appUserId
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function findAllKYC($appUserId)
     {
-        $url = sprintf('users/%s/subaccounts/', $user->getAppuserid());
-        return $this->getAll($url, $this->subAccountClassName);
+        $url = sprintf('users/%s/kyc/', $appUserId);
+
+        return $this->getAll($url, $this->KYCEntityClassName);
     }
 
-    public function findOneUserSubAccountById($user, $id)
+    /**
+     * Create new KYC demand
+     *
+     * @param $appUserId
+     * @param KYC $kyc
+     * @return \Picoss\SMoney\Entity\KYC
+     * @throws \Exception
+     */
+    public function createKYC($appUserId, KYC $kyc)
     {
-        $url = sprintf('users/%s/subaccounts/%s', $user->getAppuserid(), $id);
-        return $this->getOne($url, $this->subAccountClassName);
-    }
+        $url = sprintf('users/%s/kyc/', $appUserId);
 
-    public function createSubAccount($userId, SubAccount $subAccount)
-    {
-        $url = sprintf('users/%s/subaccounts/', $userId);
-        return parent::createObject($url, $subAccount);
-    }
+        $headers = [
+            'Accept' => sprintf('application/vnd.s-money.v%s+%s', $this->getApiVersion(), $this->getOutputFormat()),
+            'Content-Type' => 'multipart/form-data',
+        ];
 
-    public function updateSubAccount($userId, SubAccount $subAccount)
-    {
-        $url = sprintf('users/%s/subaccounts/%s', $userId, $subAccount->getAppAccountId());
-        return parent::updateObject($url, $subAccount);
-    }
+        $body = [];
+        $count = 0;
+        foreach ($kyc->getFiles() as $file) {
+            $postFile = new PostFile('file' . $count, fopen($file->getRealPath(), 'r'), $file->getFilename());
+            $body['file' . $count] = $postFile;
+            $count++;
+        }
 
-    public function deleteSubAccount($userId, SubAccount $subAccount)
-    {
-        $url = sprintf('users/%s/subaccounts/%s', $userId, $subAccount->getAppAccountId());
-        return parent::updateObject($url, $subAccount);
+        $response = $this->root->getHttpClient()->post($url, $body, $headers);
+
+        return $this->castResponseToEntity($response->json(['object' => true]), get_class($kyc));
     }
 }

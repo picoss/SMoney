@@ -4,36 +4,45 @@ namespace Picoss\SMoney\Entity;
 
 class Address extends EntityBase
 {
-
-    protected $persistable = false;
-
     /**
      * Street
      *
-     * @var string $Street
+     * @var string
      */
     protected $Street;
 
     /**
      * Zip code
      *
-     * @var string $ZipCode
+     * @var string
      */
     protected $ZipCode;
 
     /**
      * City
      *
-     * @var string $City
+     * @var string
      */
     protected $City;
 
     /**
      * Country
      *
-     * @var string $Country
+     * @var string
      */
     protected $Country;
+
+    /**
+     * Createable fields
+     *
+     * @var array
+     */
+    protected $createableFields = [
+        'Street',
+        'ZipCode',
+        'City',
+        'Country',
+    ];
 
     /**
      * Updateable fields
@@ -47,49 +56,93 @@ class Address extends EntityBase
         'Country',
     ];
 
-    public function setStreet($street)
+    /**
+     * Set Street
+     *
+     * @var string $Street
+     * @return Tmp
+     */
+    public function setStreet($Street)
     {
-        $this->Street = $street;
+        $this->Street = $Street;
 
         return $this;
     }
 
+    /**
+     * Get Street
+     *
+     * @return string
+     */
     public function getStreet()
     {
         return $this->Street;
     }
 
-    public function setZipcode($zipcode)
+    /**
+     * Set ZipCode
+     *
+     * @var string $ZipCode
+     * @return Tmp
+     */
+    public function setZipCode($ZipCode)
     {
-        $this->ZipCode = $zipcode;
+        $this->ZipCode = $ZipCode;
 
         return $this;
     }
 
-    public function getZipcode()
+    /**
+     * Get ZipCode
+     *
+     * @return string
+     */
+    public function getZipCode()
     {
         return $this->ZipCode;
     }
 
-    public function setCity($city)
+    /**
+     * Set City
+     *
+     * @var string $City
+     * @return Tmp
+     */
+    public function setCity($City)
     {
-        $this->City = $city;
+        $this->City = $City;
 
         return $this;
     }
 
+    /**
+     * Get City
+     *
+     * @return string
+     */
     public function getCity()
     {
         return $this->City;
     }
 
-    public function setCountry($country)
+    /**
+     * Set Country
+     *
+     * @var string $Country
+     * @return Tmp
+     */
+    public function setCountry($Country)
     {
-        $this->Country = $country;
+        $this->Country = $Country;
 
         return $this;
     }
 
+    /**
+     * Get Country
+     *
+     * @return string
+     */
     public function getCountry()
     {
         return $this->Country;

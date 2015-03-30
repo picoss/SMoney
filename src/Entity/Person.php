@@ -2,7 +2,7 @@
 
 namespace Picoss\SMoney\Entity;
 
-class SubAccount extends EntityBase
+abstract class Person extends EntityBase
 {
     /**
      * Id
@@ -19,13 +19,6 @@ class SubAccount extends EntityBase
     protected $AppAccountId;
 
     /**
-     * Amount
-     *
-     * @var string
-     */
-    protected $Amount;
-
-    /**
      * DisplayName
      *
      * @var string
@@ -33,11 +26,11 @@ class SubAccount extends EntityBase
     protected $DisplayName;
 
     /**
-     * IsDefault
+     * Href
      *
      * @var string
      */
-    protected $IsDefault;
+    protected $Href;
 
     /**
      * Createable fields
@@ -45,17 +38,7 @@ class SubAccount extends EntityBase
      * @var array
      */
     protected $createableFields = [
-        'DisplayName',
-    ];
-
-    /**
-     * Updateable fields
-     *
-     * @var array
-     */
-    protected $updateableFields = [
-        'AppAccountId',
-        'DisplayName',
+        'AppAccountId'
     ];
 
     /**
@@ -72,7 +55,7 @@ class SubAccount extends EntityBase
      * Set AppAccountId
      *
      * @var string $AppAccountId
-     * @return SubAccount
+     * @return Person
      */
     public function setAppAccountId($AppAccountId)
     {
@@ -92,33 +75,10 @@ class SubAccount extends EntityBase
     }
 
     /**
-     * Set Amount
-     *
-     * @var string $Amount
-     * @return SubAccount
-     */
-    public function setAmount($Amount)
-    {
-        $this->Amount = $Amount;
-
-        return $this;
-    }
-
-    /**
-     * Get Amount
-     *
-     * @return string
-     */
-    public function getAmount()
-    {
-        return $this->Amount;
-    }
-
-    /**
      * Set DisplayName
      *
      * @var string $DisplayName
-     * @return SubAccount
+     * @return Person
      */
     public function setDisplayName($DisplayName)
     {
@@ -138,25 +98,12 @@ class SubAccount extends EntityBase
     }
 
     /**
-     * Set IsDefault
-     *
-     * @var string $IsDefault
-     * @return SubAccount
-     */
-    public function setIsDefault($IsDefault)
-    {
-        $this->IsDefault = $IsDefault;
-
-        return $this;
-    }
-
-    /**
-     * Get IsDefault
+     * Get Href
      *
      * @return string
      */
-    public function getIsDefault()
+    public function getHref()
     {
-        return $this->IsDefault;
+        return $this->Href;
     }
 }

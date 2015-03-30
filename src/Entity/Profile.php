@@ -4,65 +4,65 @@ namespace Picoss\SMoney\Entity;
 
 class Profile extends EntityBase
 {
-
+    /**
+     * Profile gender
+     */
     const GENDER_MALE = 0;
     const GENDER_FEMALE = 1;
 
-    protected $persistable = false;
-
     /**
-     * User civility
+     * User Civility
      *
-     * @var int $Civility
+     * @var int
      */
     protected $Civility;
 
     /**
-     * User firstname
+     * User Firstname
      *
-     * @var string $FirstName
+     * @var string
      */
     protected $FirstName;
 
     /**
-     * User lastname
+     * User Lastname
      *
-     * @var string $LastName
+     * @var string
      */
     protected $LastName;
 
     /**
-     * User birth date
+     * User Birthdate
      *
-     * @var DateTime $Birthdate
+     * @var DateTime
      */
     protected $Birthdate;
 
     /**
-     * User address
+     * User Address
      *
-     * @var Address $Address
+     * @var Address
      */
     protected $Address;
 
     /**
-     * User phonenumber
+     * User PhoneNumber
      *
-     * @var string $PhoneNumber
+     * @var string
      */
     protected $PhoneNumber;
 
     /**
-     * User email
+     * User Email
      *
-     * @var string $Email
+     * @var string
      */
     protected $Email;
 
     /**
-     * User alias
+     * User Alias
      *
-     * @var string $Alias
+     * @var string
      */
     protected $Alias;
 
@@ -73,6 +73,22 @@ class Profile extends EntityBase
      */
     protected $subObjects = [
         'Address' => 'Picoss\\SMoney\\Entity\\Address',
+    ];
+
+    /**
+     * Createable fields
+     *
+     * @var array
+     */
+    protected $createableFields = [
+        'Civility',
+        'FirstName',
+        'LastName',
+        'Birthdate',
+        'Address',
+        'PhoneNumber',
+        'Email',
+        'Alias',
     ];
 
     /**
@@ -91,49 +107,93 @@ class Profile extends EntityBase
         'Alias',
     ];
 
-    public function setCivility($civility)
+    /**
+     * Set Civility
+     *
+     * @var string $Civility
+     * @return Profile
+     */
+    public function setCivility($Civility)
     {
-        $this->Civility = $civility;
+        $this->Civility = $Civility;
 
         return $this;
     }
 
+    /**
+     * Get Civility
+     *
+     * @return string
+     */
     public function getCivility()
     {
         return $this->Civility;
     }
 
-    public function setFirstname($firstname)
+    /**
+     * Set FirstName
+     *
+     * @var string $FirstName
+     * @return Profile
+     */
+    public function setFirstName($FirstName)
     {
-        $this->FirstName = $firstname;
+        $this->FirstName = $FirstName;
 
         return $this;
     }
 
-    public function getFirstname()
+    /**
+     * Get FirstName
+     *
+     * @return string
+     */
+    public function getFirstName()
     {
         return $this->FirstName;
     }
 
-    public function setLastname($lastname)
+    /**
+     * Set LastName
+     *
+     * @var string $LastName
+     * @return Profile
+     */
+    public function setLastName($LastName)
     {
-        $this->LastName = $lastname;
+        $this->LastName = $LastName;
 
         return $this;
     }
 
-    public function getLastname()
+    /**
+     * Get LastName
+     *
+     * @return string
+     */
+    public function getLastName()
     {
         return $this->LastName;
     }
 
-    public function setBirthdate(\DateTime $birthdate)
+    /**
+     * Set Birthdate
+     *
+     * @var string $Birthdate
+     * @return Profile
+     */
+    public function setBirthdate(\DateTime $Birthdate)
     {
-        $this->Birthdate = $birthdate;
+        $this->Birthdate = $Birthdate;
 
         return $this;
     }
 
+    /**
+     * Get Birthdate
+     *
+     * @return \DateTime
+     */
     public function getBirthdate()
     {
         if (is_string($this->Birthdate)) {
@@ -145,49 +205,93 @@ class Profile extends EntityBase
         return $this->Birthdate;
     }
 
-    public function setAddress(Address $address)
+    /**
+     * Set Address
+     *
+     * @var Address $Address
+     * @return Profile
+     */
+    public function setAddress(Address $Address)
     {
-        $this->Address = $address;
+        $this->Address = $Address;
 
         return $this;
     }
 
+    /**
+     * Get Address
+     *
+     * @return Address
+     */
     public function getAddress()
     {
         return $this->Address;
     }
 
-    public function setPhonenumber($phonenumber)
+    /**
+     * Set PhoneNumber
+     *
+     * @var string $PhoneNumber
+     * @return Profile
+     */
+    public function setPhoneNumber($PhoneNumber)
     {
-        $this->PhoneNumber = $phonenumber;
+        $this->PhoneNumber = $PhoneNumber;
 
         return $this;
     }
 
-    public function getPhonenumber()
+    /**
+     * Get PhoneNumber
+     *
+     * @return string
+     */
+    public function getPhoneNumber()
     {
         return $this->PhoneNumber;
     }
 
-    public function setEmail($email)
+    /**
+     * Set Email
+     *
+     * @var string $Email
+     * @return Profile
+     */
+    public function setEmail($Email)
     {
-        $this->Email = $email;
+        $this->Email = $Email;
 
         return $this;
     }
 
+    /**
+     * Get Email
+     *
+     * @return string
+     */
     public function getEmail()
     {
         return $this->Email;
     }
 
-    public function setAlias($alias)
+    /**
+     * Set Alias
+     *
+     * @var string $Alias
+     * @return Profile
+     */
+    public function setAlias($Alias)
     {
-        $this->Alias = $alias;
+        $this->Alias = $Alias;
 
         return $this;
     }
 
+    /**
+     * Get Alias
+     *
+     * @return string
+     */
     public function getAlias()
     {
         return $this->Alias;
