@@ -74,6 +74,20 @@ class ApiUser extends ApiBase
     }
 
     /**
+     * Create or update user
+     *
+     * @param User $user
+     * @return User
+     */
+    public function save(User $user)
+    {
+        if ($user->getId() != null) {
+            return $this->update($user);
+        }
+        return $this->create($user);
+    }
+
+    /**
      * Get user KYC demands
      *
      * @param string $appUserId
