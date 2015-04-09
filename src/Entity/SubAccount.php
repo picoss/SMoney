@@ -45,6 +45,7 @@ class SubAccount extends EntityBase
      * @var array
      */
     protected $createableFields = [
+        'AppAccountId',
         'DisplayName',
     ];
 
@@ -54,7 +55,6 @@ class SubAccount extends EntityBase
      * @var array
      */
     protected $updateableFields = [
-        'AppAccountId',
         'DisplayName',
     ];
 
