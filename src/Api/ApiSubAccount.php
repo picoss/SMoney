@@ -42,7 +42,7 @@ class ApiSubAccount extends ApiBase
     public function findOneById($appUserId, $id)
     {
         $url = sprintf('users/%s/subaccounts/%s', $appUserId, $id);
-        return $this->getOne($url, $this->subAccountClassName);
+        return $this->getOne($url, $this->entityClassName);
     }
 
     /**
