@@ -4,6 +4,7 @@ namespace Picoss\SMoney\Api;
 
 use GuzzleHttp\Post\PostFile;
 use Picoss\SMoney\Entity\KYC;
+use Picoss\SMoney\Entity\Limit;
 use Picoss\SMoney\Entity\User;
 
 class ApiUser extends ApiBase
@@ -27,6 +28,12 @@ class ApiUser extends ApiBase
      * @var string
      */
     protected $KYCEntityClassName = 'Picoss\\SMoney\\Entity\\KYC';
+
+    /**
+     * Limit entity class name
+     * @var string
+     */
+    protected $limitClassName = 'Picoss\\SMoney\\Entity\\Limit';
 
     /**
      * Find all users
@@ -128,5 +135,16 @@ class ApiUser extends ApiBase
         $response = $this->root->getHttpClient()->post($url, $body, $headers);
 
         return $this->castResponseToEntity($response->json(['object' => true]), get_class($kyc));
+    }
+
+    /**
+     * Get user global in and money out limits
+     *
+     * @param $appUserId
+     * @return \Picoss\SMoney\Entity\Limit
+     */
+    public function getLimits($appUserId)
+    {
+        return $this->getOne(sprintf('users/%s/limits', $appUserId), $this->limitClassName);
     }
 }
