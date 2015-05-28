@@ -108,6 +108,19 @@ class ApiUser extends ApiBase
     }
 
     /**
+     * Get user KYC demand by id
+     *
+     * @param string $appUserId
+     * @param string $id
+     * @return \Picoss\SMoney\Entity\KYC
+     */
+    public function findKYCById($appUserId, $id)
+    {
+        $url = sprintf('users/%s/kyc/%s', $appUserId, $id);
+        return $this->getOne($url, $this->KYCEntityClassName);
+    }
+
+    /**
      * Create new KYC demand
      *
      * @param $appUserId
@@ -132,9 +145,15 @@ class ApiUser extends ApiBase
             $count++;
         }
 
-        $response = $this->root->getHttpClient()->post($url, $body, $headers);
+        try {
+            $response = $this->root->getHttpClient()->post($url, $body, $headers);
 
-        return $this->castResponseToEntity($response->json(['object' => true]), get_class($kyc));
+            return $this->castResponseToEntity($response->json(['object' => true]), get_class($kyc));
+        } catch (ClientException $e) {
+            $this->addError($e->getRequest(), $e->getResponse());
+
+            return false;
+        }
     }
 
     /**

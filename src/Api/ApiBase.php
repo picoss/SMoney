@@ -247,7 +247,7 @@ abstract class ApiBase
         return count($this->errors) != 0;
     }
 
-    private function addError(RequestInterface $request, ResponseInterface $response)
+    protected function addError(RequestInterface $request, ResponseInterface $response)
     {
         $error = new SMoneyError();
 
