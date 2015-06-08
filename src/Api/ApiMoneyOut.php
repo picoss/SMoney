@@ -75,7 +75,7 @@ class ApiMoneyOut extends ApiBase
             case MoneyOut::TYPE_RECURRING:
                 $pattern = 'users/%s/moneyouts/recurring';
                 break;
-            case MoneyOut::TYPE_RECURRING:
+            case MoneyOut::TYPE_ONESHOT:
                 $pattern = 'users/%s/moneyouts/oneshot';
                 break;
         }
