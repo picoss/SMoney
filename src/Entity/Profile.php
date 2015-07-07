@@ -182,9 +182,9 @@ class Profile extends EntityBase
      * @var string $Birthdate
      * @return Profile
      */
-    public function setBirthdate(\DateTime $Birthdate)
+    public function setBirthdate(\DateTime $Birthdate = null)
     {
-        $this->Birthdate = $Birthdate;
+        $this->Birthdate = $Birthdate ? $Birthdate : null;
 
         return $this;
     }
