@@ -108,6 +108,7 @@ class User extends EntityBase
         'Profile',
         'Type',
         'Company',
+        'Status',
     ];
 
     /**
@@ -227,6 +228,19 @@ class User extends EntityBase
     public function getBankAccounts()
     {
         return $this->BankAccounts;
+    }
+
+    /**
+     * Set Status
+     *
+     * @param integer $Status
+     * @return User
+     */
+    public function setStatus($Status)
+    {
+        $this->Status = $Status;
+
+        return $this;
     }
 
     /**

@@ -81,6 +81,6 @@ class ApiSubAccount extends ApiBase
     public function delete($appUserId, SubAccount $subAccount)
     {
         $url = sprintf('users/%s/subaccounts/%s', $appUserId, $subAccount->getAppAccountId());
-        return $this->updateObject($url, $subAccount);
+        return $this->deleteObject($url);
     }
 }
