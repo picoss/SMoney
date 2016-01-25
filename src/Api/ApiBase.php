@@ -91,6 +91,26 @@ abstract class ApiBase
         }
     }
 
+    protected function createObjects($url, $entities, $entityClassName)
+    {
+        $headers = $this->getBaseHeaders();
+
+        $requestData = $this->getEntityRequestData($entities);
+
+        $body = json_encode($requestData);
+
+        try {
+            $response = $this->root->getHttpClient()->post($url, $body, $headers);
+
+            return $this->castResponseToEntity($response->json(['object' => true]), $entityClassName);
+
+        } catch (ClientException $e) {
+            $this->addError($e->getRequest(), $e->getResponse());
+
+            return false;
+        }
+    }
+
     protected function updateObject($url, $entity)
     {
         $headers = $this->getBaseHeaders();
@@ -193,24 +213,32 @@ abstract class ApiBase
     private function getEntityRequestData($entity, $create = true)
     {
         $data = [];
-        $fields = $create ? $entity->getCreateableFields() : $entity->getUpdateableFields();
 
-        $entityReflection = new \ReflectionClass($entity);
+        if (is_array($entity)) {
+            foreach ($entity as $object) {
+                $data[] = $this->getEntityRequestData($object, $create);
+            }
+        }
+        else {
+            $fields = $create ? $entity->getCreateableFields() : $entity->getUpdateableFields();
 
-        foreach ($fields as $field) {
-            if ($entityReflection->hasProperty($field)) {
-                $property = $entityReflection->getProperty($field);
-                $property->setAccessible(true);
-                $value = $property->getValue($entity);
+            $entityReflection = new \ReflectionClass($entity);
 
-                if (is_object($value)) {
-                    if ($value instanceof EntityBase) {
-                        $value = $this->getEntityRequestData($value, $create);
-                    } elseif ($value instanceof \DateTime) {
-                        $value = $value->format('c');
+            foreach ($fields as $field) {
+                if ($entityReflection->hasProperty($field)) {
+                    $property = $entityReflection->getProperty($field);
+                    $property->setAccessible(true);
+                    $value = $property->getValue($entity);
+
+                    if (is_object($value)) {
+                        if ($value instanceof EntityBase) {
+                            $value = $this->getEntityRequestData($value, $create);
+                        } elseif ($value instanceof \DateTime) {
+                            $value = $value->format('c');
+                        }
                     }
+                    $data[$field] = $value;
                 }
-                $data[$field] = $value;
             }
         }
 

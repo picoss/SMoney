@@ -57,4 +57,17 @@ class ApiPayment extends ApiBase
         $url = sprintf('users/%s/payments', $appUserId);
         return $this->createObject($url, $Payment);
     }
+
+    /**
+     * Create multiple payments
+     *
+     * @param $appUserId
+     * @param array $Payments
+     * @return array
+     */
+    public function createMultiple($appUserId, array $Payments)
+    {
+        $url = sprintf('users/%s/payments', $appUserId);
+        return $this->createObjects($url, $Payments, $this->entityClassName);
+    }
 }
