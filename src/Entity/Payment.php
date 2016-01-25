@@ -12,6 +12,13 @@ class Payment extends EntityBase
     protected $Id;
 
     /**
+     * OrderId
+     *
+     * @var string
+     */
+    protected $OrderId;
+
+    /**
      * Beneficiary
      *
      * @var Beneficiary
@@ -70,6 +77,7 @@ class Payment extends EntityBase
      * @var array
      */
     protected $createableFields = [
+        'OrderId',
         'Beneficiary',
         'Sender',
         'Amount',
@@ -85,6 +93,29 @@ class Payment extends EntityBase
     public function getId()
     {
         return $this->Id;
+    }
+
+    /**
+     * Set OrderId
+     *
+     * @var string $OrderId
+     * @return Payment
+     */
+    public function setOrderId($OrderId)
+    {
+        $this->OrderId = $OrderId;
+
+        return $this;
+    }
+
+    /**
+     * Get OrderId
+     *
+     * @return string
+     */
+    public function getOrderId()
+    {
+        return $this->OrderId;
     }
 
     /**
